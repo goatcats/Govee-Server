@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "node-govee-led": "^1.5.1"
+  }
+}
