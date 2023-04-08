@@ -25,17 +25,18 @@ async function callTheChild(devices) {
 
 const server = http.createServer((req, res) => {
     if (req.url === "/run" && req.method === "GET") {
+        res.setHeader("Access-Control-Allow-Origin", "*");
         callTheChild(myDevices)
             .then(() => {
                 res.statusCode = 200;
                 res.setHeader("Content-Type", "text/plain");
-                res.end("success");
+                res.end("Success!");
             })
             .catch((error) => {
                 console.error(error);
                 res.statusCode = 500;
                 res.setHeader("Content-Type", "text/plain");
-                res.end("Error");
+                res.end("Error changing color!");
             });
     } else {
         res.statusCode = 404;
