@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "node-govee-led": "^1.5.1"
+  },
+  "scripts": {
+    "start": "node main.js"
   }
 }
