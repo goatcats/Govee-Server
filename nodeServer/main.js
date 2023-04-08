@@ -38,11 +38,11 @@ const server = http.createServer((req, res) => {
                 res.setHeader("Content-Type", "text/plain");
                 res.end("Error changing color!");
             });
-    } else {
+    }/* else {
         res.statusCode = 404;
         res.setHeader("Content-Type", "text/plain");
         res.end("Not found");
-    }
+    }*/
 });
 
 const PORT = process.env.PORT || 3000;
