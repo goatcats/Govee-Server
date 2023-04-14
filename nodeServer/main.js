@@ -13,6 +13,7 @@ const panels = new Govee({
 });
 
 let myDevices = [strips, panels];
+let lightsChanged = false;
 
 async function callTheChild(devices) {
     for (let i = 0; i < devices.length; i++) {
@@ -31,6 +32,7 @@ const server = http.createServer((req, res) => {
                 res.statusCode = 200;
                 res.setHeader("Content-Type", "text/plain");
                 res.end("Success!");
+                lightsChanged = true;
             })
             .catch((error) => {
                 console.error(error);
@@ -38,11 +40,25 @@ const server = http.createServer((req, res) => {
                 res.setHeader("Content-Type", "text/plain");
                 res.end("Error changing color!");
             });
-    }/* else {
+    } else if (req.url === "/check" && req.method === "GET") {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        if (lightsChanged) {
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "text/plain");
+            res.end("changed"); 
+        } else {
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "text/plain");
+            res.end("pending");
+        }
+        setTimeout(() => {
+            lightsChanged = false;
+        }, 10000);
+    } else {
         res.statusCode = 404;
         res.setHeader("Content-Type", "text/plain");
         res.end("Not found");
-    }*/
+    }
 });
 
 const PORT = process.env.PORT || 3000;
