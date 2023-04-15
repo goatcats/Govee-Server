@@ -33,9 +33,11 @@ const server = http.createServer((req, res) => {
                 res.setHeader("Content-Type", "text/plain");
                 res.end("Success!");
                 lightsChanged = true;
+                setTimeout(() => {
+                    lightsChanged = false;
+                }, 30000)
             })
             .catch((error) => {
-                console.error(error);
                 res.statusCode = 500;
                 res.setHeader("Content-Type", "text/plain");
                 res.end("Error changing color!");
@@ -45,15 +47,14 @@ const server = http.createServer((req, res) => {
         if (lightsChanged) {
             res.statusCode = 200;
             res.setHeader("Content-Type", "text/plain");
-            res.end("changed"); 
+            res.end("changed");
+            
         } else {
             res.statusCode = 200;
             res.setHeader("Content-Type", "text/plain");
             res.end("pending");
         }
-        setTimeout(() => {
-            lightsChanged = false;
-        }, 45000);
+        
     } else {
         res.statusCode = 404;
         res.setHeader("Content-Type", "text/plain");
@@ -61,7 +62,7 @@ const server = http.createServer((req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3500;
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
