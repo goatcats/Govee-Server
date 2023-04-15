@@ -53,7 +53,7 @@ const server = http.createServer((req, res) => {
         }
         setTimeout(() => {
             lightsChanged = false;
-        }, 10000);
+        }, 45000);
     } else {
         res.statusCode = 404;
         res.setHeader("Content-Type", "text/plain");
