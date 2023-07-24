@@ -8,30 +8,42 @@ const device = new Govee({
 });
 
 let lightsChanged = false;
+let colorbool = true;
+
+async function turnRed() {
+    await device.turnOn()
+    await device.setBrightness(50);
+    await device.setColor("#ff0000");
+}
 
 async function callTheChild(device) {
-    const brightness = await device.getBrightness();
-    await device.turnOn();
-    await device.setBrightness(100);
-    await device.setColor("#ff0000");
-    setTimeout(async () => {
-        await device.setColor("0000ff");
-        await device.setBrightness(brightness);
-    }, 10000)
+    for (let i = 0; i < 6; i++) {
+        await delay(1500);
+        if (!colorbool) {
+            await device.setColor("#0000ff");
+        } else {
+            await device.setColor("#ff0000");
+        }
+        colorbool = !colorbool;
+        console.log(i, colorbool);
+    }
+}
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const server = http.createServer((req, res) => {
     if (req.url === "/run" && req.method === "GET") {
         res.setHeader("Access-Control-Allow-Origin", "*");
-        callTheChild(device)
-            .then(() => {
+        turnRed()
+            .then(async () => {
                 res.statusCode = 200;
                 res.setHeader("Content-Type", "text/plain");
                 res.end("Success!");
                 lightsChanged = true;
-                setTimeout(() => {
-                    lightsChanged = false;
-                }, 30000)
+                await callTheChild(device);
+                lightsChanged = false;
             })
             .catch((error) => {
                 res.statusCode = 500;
@@ -44,13 +56,11 @@ const server = http.createServer((req, res) => {
             res.statusCode = 200;
             res.setHeader("Content-Type", "text/plain");
             res.end("changed");
-            
         } else {
             res.statusCode = 200;
             res.setHeader("Content-Type", "text/plain");
             res.end("pending");
         }
-        
     } else {
         res.statusCode = 404;
         res.setHeader("Content-Type", "text/plain");
